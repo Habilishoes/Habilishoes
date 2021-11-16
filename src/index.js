@@ -1,17 +1,37 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+const express = require('express');
+const morgan = require('morgan');
+const path = require('path')
+const cors = require('cors')
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+const {mongoose} = require('./database')
+const app = express();
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+//settings
+app.set('port', process.env.PORT || 3001);
+app.use(function(req, res, next) {
+   res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+   next();
+});
+
+const corsOptions = {
+   origin: 'http://localhost:3000',
+   optionsSuccessStatus: 200,
+   methods: "GET, PUT, POST, DELETE"
+}
+
+app.use(cors(corsOptions));
+
+
+//middlewares
+app.use(morgan('dev'));
+app.use(express.json());
+//routes
+app.use('/api/productos',require('./routes/productos.routes'));
+//static files
+console.log(path.join(__dirname, 'public'))
+app.use(express.static(path.join(__dirname, 'public')))
+//empezando el server
+app.listen(app.get('port'), () => {
+    console.log(`Server on port ${app.get('port')}`);
+});
