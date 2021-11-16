@@ -41,7 +41,7 @@ const onListening = () => {
   const bind = typeof port === "string" ? "pipe " + port : "port " + port;
 };
 
-const port = normalizePort(process.env.PORT || "3001");
+const port = normalizePort('https://tranquil-beach-95447.herokuapp.com/' || "3001");
 app.set("port", port);
 
 const server = http.createServer(app);
